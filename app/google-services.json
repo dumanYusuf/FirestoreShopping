@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "23246760035",
+    "project_id": "firestoreshopping-c608e",
+    "storage_bucket": "firestoreshopping-c608e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23246760035:android:76d2da0fe40c196469f056",
+        "android_client_info": {
+          "package_name": "com.example.firestoreshopping"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiQd45xPQFbjV4e4xQUllUsLnV7-PS3ys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
