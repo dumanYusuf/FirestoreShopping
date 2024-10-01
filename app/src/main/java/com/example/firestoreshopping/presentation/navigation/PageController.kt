@@ -11,7 +11,9 @@ import androidx.navigation.navArgument
 import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
 import com.example.firestoreshopping.domain.model.Category
+import com.example.firestoreshopping.domain.model.Products
 import com.example.firestoreshopping.presentation.basket_page_view.view.BasketPage
+import com.example.firestoreshopping.presentation.detail_page_view.DetailPage
 import com.example.firestoreshopping.presentation.favori_page_view.view.FavoriPage
 import com.example.firestoreshopping.presentation.home_page_view.view.HomePage
 import com.example.firestoreshopping.presentation.login_view.view.LoginPage
@@ -106,7 +108,21 @@ fun PageController() {
                 val jsonCategory = it.arguments?.getString("categoryId")
                 val decodedJsonCategory = URLDecoder.decode(jsonCategory, "UTF-8")
                 val category = Gson().fromJson(decodedJsonCategory, Category::class.java)
-                ProductPage(categoryId = category)
+                ProductPage(categoryId = category, navController = controller){
+                    controller.popBackStack()
+                }
+            }
+            composable(Screan.DetailPage.route+"/{product}",
+                arguments = listOf(
+                    navArgument("product"){type= NavType.StringType}
+                )
+            ){
+                val jsonProduct = it.arguments?.getString("product")
+                val decodedJsonProduct = URLDecoder.decode(jsonProduct, "UTF-8")
+                val product = Gson().fromJson(decodedJsonProduct, Products::class.java)
+               DetailPage(product = product){
+                   controller.popBackStack()
+               }
             }
         }
     }

@@ -19,6 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.example.firestoreshopping.R
@@ -49,7 +51,9 @@ import java.net.URLEncoder
 @Composable
 fun ProductPage(
     viewModel: ProductsViewModel= hiltViewModel(),
-    categoryId:Category
+    categoryId:Category,
+    navController: NavController,
+    onBackPressed:()->Unit
 ) {
 
     LaunchedEffect (true){
@@ -62,6 +66,13 @@ fun ProductPage(
    Column (modifier = Modifier.fillMaxSize()){
        Column (modifier = Modifier.fillMaxWidth()){
            Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
+
+               IconButton(
+                   onClick = { onBackPressed() }
+               ) {
+                   Icon(painter = painterResource(id = R.drawable.back), contentDescription ="" )
+               }
+
                Text(
                    color = Color.Red,
                    fontWeight = FontWeight.Bold,
@@ -93,9 +104,9 @@ fun ProductPage(
                                .padding(10.dp)
                                .height(300.dp)
                                .clickable {
-                                   /*val movieObject = Gson().toJson(products)
-                                   val encodedMovieObject = URLEncoder.encode(movieObject, "UTF-8")
-                                   navController.navigate(Screan.ProductPage.route+"/$encodedMovieObject")*/
+                                   val productObject = Gson().toJson(products)
+                                   val encodedProductObject = URLEncoder.encode(productObject, "UTF-8")
+                                   navController.navigate(Screan.DetailPage.route+"/$encodedProductObject")
                                },
                            shape = androidx.compose.material3.MaterialTheme.shapes.medium,
 
