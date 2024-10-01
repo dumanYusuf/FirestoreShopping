@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -36,6 +37,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
 import com.example.firestoreshopping.domain.model.Category
+import com.example.firestoreshopping.domain.model.Products
 import com.example.firestoreshopping.presentation.favori_page_view.FavoriViewModel
 
 @Composable
@@ -81,13 +83,13 @@ fun FavoriPage(
                     Card(modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp)
-                        .padding(10.dp).clickable {
+                        .padding(10.dp)
+                        .clickable {
                         }) {
                         Box(modifier = Modifier.fillMaxWidth()){
                             Image(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp),
+                                    .fillMaxWidth().size(250.dp),
                                 contentScale = ContentScale.Crop,
                                 painter = rememberAsyncImagePainter(model =favoriList.productImage , imageLoader = ImageLoader(context) ),
                                 contentDescription ="" )
@@ -101,6 +103,13 @@ fun FavoriPage(
                                     fontSize = 20.sp,
                                     text = "${favoriList.productPrice}TL")
                             }
+                            Icon(
+                                tint = Color.Red,
+                                modifier = Modifier.clickable {
+                                    viewModel.deleteProducts(favoriList)
+                                    viewModel.loadFavori()
+                                }.size(40.dp).align(Alignment.BottomEnd),
+                                painter = painterResource(id = R.drawable.delete), contentDescription ="" )
                         }
                     }
                 }

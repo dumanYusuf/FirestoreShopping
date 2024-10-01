@@ -69,20 +69,22 @@ class FirestoreRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun addProductToFavori(products: Favori): Resource<Favori> {
-        return try {
-            val userId = auth.currentUser?.uid
-            if (userId != null) {
-                firestore.collection("Users").document(userId)
-                    .collection("Favori").add(products.toMap()).await()
-                Resource.Success(products)
-            } else {
-                Resource.Error("User ID is null")
-            }
-        } catch (e: Exception) {
-            Resource.Error("Error: ${e.message}")
-        }
-    }
+   override suspend fun addProductToFavori(products: Favori): Resource<Favori> {
+       return try {
+           val userId = auth.currentUser?.uid
+           if (userId != null) {
+               firestore.collection("Users").document(userId)
+                   .collection("Favori").document(products.favoriId)
+                   .set(products.toMap()).await()
+               Resource.Success(products)
+           } else {
+               Resource.Error("User ID is null")
+           }
+       } catch (e: Exception) {
+           Resource.Error("Error: ${e.message}")
+       }
+   }
+
 
     override suspend fun getProductToFavori(): Flow<Resource<List<Favori>>> = flow{
         try {
@@ -100,5 +102,23 @@ class FirestoreRepoImpl @Inject constructor(
             emit(Resource.Error("Error"))
         }
     }
+
+    override suspend fun deleteProducts(id: Favori): Resource<Favori> {
+        return try {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                firestore.collection("Users").document(userId)
+                    .collection("Favori").document(id.favoriId).delete().await()
+                Resource.Success(id)
+            }
+
+            else {
+                Resource.Error("User Not Found")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Error: ${e.message}")
+        }
+    }
+
 
 }

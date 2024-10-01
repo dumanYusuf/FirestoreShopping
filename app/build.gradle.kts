@@ -116,4 +116,9 @@ dependencies {
 // sayfalar arası veri transferi
     implementation("com.google.code.gson:gson:2.10.1")
 
+    // swip
+    implementation (libs.androidx.foundation)
+    implementation (libs.material3)
+
+
 }
