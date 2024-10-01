@@ -1,31 +1,15 @@
 package com.example.firestoreshopping.presentation.product_page_view.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,116 +26,156 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
 import com.example.firestoreshopping.domain.model.Category
+import com.example.firestoreshopping.domain.model.Products
 import com.example.firestoreshopping.presentation.product_page_view.ProductsViewModel
 import com.google.gson.Gson
 import java.net.URLEncoder
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProductPage(
-    viewModel: ProductsViewModel= hiltViewModel(),
-    categoryId:Category,
+    viewModel: ProductsViewModel = hiltViewModel(),
+    categoryId: Category,
     navController: NavController,
-    onBackPressed:()->Unit
+    onBackPressed: () -> Unit
 ) {
+    var searching = remember { mutableStateOf("") }
 
-    LaunchedEffect (true){
+    LaunchedEffect(true) {
         viewModel.loadCategoryFilterProduct(categoryId.categoryId)
     }
 
-    val context= LocalContext.current
-    val stateProduct=viewModel.state.collectAsState()
+    val context = LocalContext.current
+    val stateProduct = viewModel.state.collectAsState()
+    val stateSearch = viewModel.stateSearch.collectAsState()
 
-   Column (modifier = Modifier.fillMaxSize()){
-       Column (modifier = Modifier.fillMaxWidth()){
-           Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
+    Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = { onBackPressed() }
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.back), contentDescription = "")
+                }
 
-               IconButton(
-                   onClick = { onBackPressed() }
-               ) {
-                   Icon(painter = painterResource(id = R.drawable.back), contentDescription ="" )
-               }
+                Text(
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(16.dp),
+                    text = "Products"
+                )
 
-               Text(
-                   color = Color.Red,
-                   fontWeight = FontWeight.Bold,
-                   fontSize = 24.sp,
-                   modifier = Modifier
-                       .padding(16.dp),
-                   text = "Products"
-               )
-               Icon(
-                   tint = Color.Red,
-                   modifier = Modifier.size(35.dp),
-                   painter = painterResource(id = R.drawable.search), contentDescription = "")
-           }
+                OutlinedTextField(
+                    maxLines = 1,
+                    singleLine = false,
+                    placeholder = { Text(text = "Searching Products...")},
+                    value = searching.value,
+                    onValueChange = {
+                        if (!stateSearch.value.isLoading) {
+                            viewModel.searchProduct(it, categoryId = categoryId.categoryId)
+                            searching.value = it
+                        }
+                    }
+                )
+            }
 
-           if (stateProduct.value.isLoading) {
-               CircularProgressIndicator(
-                   color = Color.Red,
-                   modifier = Modifier
-                       .align(Alignment.CenterHorizontally)
-                       .padding(16.dp)
-               )
-           }
-           else{
-               LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
-                   items(stateProduct.value.productList) { products ->
-                       Card(
-                           modifier = Modifier
-                               .fillMaxWidth()
-                               .padding(10.dp)
-                               .height(300.dp)
-                               .clickable {
-                                   val productObject = Gson().toJson(products)
-                                   val encodedProductObject = URLEncoder.encode(productObject, "UTF-8")
-                                   navController.navigate(Screan.DetailPage.route+"/$encodedProductObject")
-                               },
-                           shape = androidx.compose.material3.MaterialTheme.shapes.medium,
+            if (searching.value.isNotEmpty()) {
+                if (stateSearch.value.isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.Red,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(16.dp)
+                    )
+                } else {
+                    LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
+                        items(stateSearch.value.productList) { products ->
+                            ProductCard(products, navController)
+                        }
+                    }
+                }
+            } else {
+                if (stateProduct.value.isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.Red,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(16.dp)
+                    )
+                } else {
+                    LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
+                        items(stateProduct.value.productList) { products ->
+                            ProductCard(products, navController)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
-                           ) {
-                           Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                               Image(
-                                   modifier = Modifier
-                                       .height(150.dp)
-                                       .fillMaxWidth(),
-                                   contentScale = ContentScale.Crop,
-                                   painter = rememberAsyncImagePainter(
-                                       model = products.productImage, imageLoader = ImageLoader(context)
-                                   ),
-                                   contentDescription = ""
-                               )
-                               Spacer(modifier = Modifier.height(8.dp))
-                               Text(
-                                   fontWeight = FontWeight.Bold,
-                                   fontSize = 20.sp,
-                                   modifier = Modifier.padding(8.dp),
-                                   text = products.productName
-                               )
-                               Text(
-                                   fontWeight = FontWeight.Bold,
-                                   fontSize = 20.sp,
-                                   modifier = Modifier.padding(8.dp),
-                                   text = "${products.productPrice} Tl"
-                               )
-                               Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
-                                   Icon(
-                                       tint = Color.Red,
-                                       modifier = Modifier.size(35.dp),
-                                       painter = painterResource(id = R.drawable.favori), contentDescription = "")
-                                   Icon(
-                                       tint = Color.Blue,
-                                       modifier = Modifier.size(35.dp),
-                                       painter = painterResource(id = R.drawable.basket), contentDescription = "")
-                               }
-                           }
-                       }
-                   }
-               }
-           }
-
-       }
-   }
-
+@Composable
+fun ProductCard(products: Products, navController: NavController) {
+    val context = LocalContext.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+            .height(300.dp)
+            .clickable {
+                val productObject = Gson().toJson(products)
+                val encodedProductObject = URLEncoder.encode(productObject, "UTF-8")
+                navController.navigate(Screan.DetailPage.route + "/$encodedProductObject")
+            },
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop,
+                painter = rememberAsyncImagePainter(
+                    model = products.productImage,
+                    imageLoader = ImageLoader(context)
+                ),
+                contentDescription = ""
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(8.dp),
+                text = products.productName
+            )
+            Text(
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(8.dp),
+                text = "${products.productPrice} Tl"
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Icon(
+                    tint = Color.Red,
+                    modifier = Modifier.size(35.dp),
+                    painter = painterResource(id = R.drawable.favori),
+                    contentDescription = ""
+                )
+                Icon(
+                    tint = Color.Blue,
+                    modifier = Modifier.size(35.dp),
+                    painter = painterResource(id = R.drawable.basket),
+                    contentDescription = ""
+                )
+            }
+        }
+    }
 }

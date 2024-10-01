@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import okhttp3.internal.filterList
 import java.util.Locale
 import javax.inject.Inject
 
@@ -45,5 +46,23 @@ class FirestoreRepoImpl @Inject constructor(
             Log.e("error", "error: ${e.localizedMessage}")
         }
     }
+
+    override suspend fun productSearch(search: String,categoryId: String): Flow<Resource<List<Products>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val productDocRef = firestore.collection("Category").document(categoryId)
+                .collection("Products").get().await()
+
+            val searchList = productDocRef.documents.mapNotNull { document ->
+                document.toObject(Products::class.java)?.takeIf { product ->
+                    product.productName.contains(search, ignoreCase = true)
+                }
+            }
+            emit(Resource.Success(searchList))
+        } catch (e: Exception) {
+            emit(Resource.Error("Error: ${e.message}"))
+        }
+    }
+
 
 }

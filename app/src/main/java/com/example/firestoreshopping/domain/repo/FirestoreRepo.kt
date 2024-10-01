@@ -12,5 +12,6 @@ interface FirestoreRepo {
 
     suspend fun getCategory():Flow<Resource<List<Category>>>
     suspend fun getProducts(categoryId:String):Flow<Resource<List<Products>>>
+    suspend fun productSearch(search:String,categoryId:String):Flow<Resource<List<Products>>>
 
 }

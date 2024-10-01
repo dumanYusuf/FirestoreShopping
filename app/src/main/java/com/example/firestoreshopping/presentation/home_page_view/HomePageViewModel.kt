@@ -22,6 +22,7 @@ class HomePageViewModel @Inject constructor(private val getCategoryFirestoreUseC
 
     fun loadCategory(){
         viewModelScope.launch {
+            _state.value=HomePageState(isLoading = true)
         getCategoryFirestoreUseCase.getCategory().collect{result->
             when(result){
                 is Resource.Success->{
