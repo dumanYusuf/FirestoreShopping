@@ -3,6 +3,8 @@ package com.example.firestoreshopping.presentation.product_page_view
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.firestoreshopping.domain.model.Favori
+import com.example.firestoreshopping.domain.use_case.add_favori_firestore_use_case.AddFavoriFirestoreUseCase
 import com.example.firestoreshopping.domain.use_case.get_category_filter_products_use_case.GetCategoryFilterProductUseCase
 import com.example.firestoreshopping.domain.use_case.search_product_use_case.SearchProductUseCase
 import com.example.firestoreshopping.util.Resource
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class ProductsViewModel @Inject constructor(
     private val productUseCase: GetCategoryFilterProductUseCase,
     private val searchUseCase:SearchProductUseCase,
+    private val addFavoriUseCase: AddFavoriFirestoreUseCase
 )
     :ViewModel(){
 
@@ -72,4 +75,15 @@ class ProductsViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun addFavoriFirestore(products:Favori){
+        viewModelScope.launch {
+            addFavoriUseCase.addFavori(products)
+            Log.e("adedded favor,","success add fovori ")
+        }
+    }
+
+
+
 }

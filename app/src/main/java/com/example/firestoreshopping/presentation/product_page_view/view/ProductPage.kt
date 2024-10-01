@@ -26,6 +26,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
 import com.example.firestoreshopping.domain.model.Category
+import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.Products
 import com.example.firestoreshopping.presentation.product_page_view.ProductsViewModel
 import com.google.gson.Gson
@@ -40,6 +41,9 @@ fun ProductPage(
     onBackPressed: () -> Unit
 ) {
     var searching = remember { mutableStateOf("") }
+    var isFavorited by remember { mutableStateOf(false) }
+
+
 
     LaunchedEffect(true) {
         viewModel.loadCategoryFilterProduct(categoryId.categoryId)
@@ -95,7 +99,7 @@ fun ProductPage(
                 } else {
                     LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
                         items(stateSearch.value.productList) { products ->
-                            ProductCard(products, navController)
+                            ProductCard(products, navController,viewModel,isFavorited)
                         }
                     }
                 }
@@ -110,7 +114,7 @@ fun ProductPage(
                 } else {
                     LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
                         items(stateProduct.value.productList) { products ->
-                            ProductCard(products, navController)
+                            ProductCard(products, navController,viewModel,isFavorited=true)
                         }
                     }
                 }
@@ -120,8 +124,11 @@ fun ProductPage(
 }
 
 @Composable
-fun ProductCard(products: Products, navController: NavController) {
+fun ProductCard(products: Products, navController: NavController,viewModel: ProductsViewModel,isFavorited:Boolean) {
+
     val context = LocalContext.current
+    var isFavorited by remember { mutableStateOf(false) } // Başlangıç durumu false
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,8 +171,12 @@ fun ProductCard(products: Products, navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Icon(
-                    tint = Color.Red,
-                    modifier = Modifier.size(35.dp),
+                    tint = if (isFavorited) Color.Red else Color.Blue,
+                    modifier = Modifier.size(35.dp).clickable {
+                        val favori=Favori(favoriId = products.productId, productId =products.productId, productName = products.productName, productImage = products.productImage, productPrice = products.productPrice, isFavorited = true)
+                        viewModel.addFavoriFirestore(favori)
+                        isFavorited=true
+                    },
                     painter = painterResource(id = R.drawable.favori),
                     contentDescription = ""
                 )

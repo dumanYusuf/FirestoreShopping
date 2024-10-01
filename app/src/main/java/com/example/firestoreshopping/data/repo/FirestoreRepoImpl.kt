@@ -2,9 +2,11 @@ package com.example.firestoreshopping.data.repo
 
 import android.util.Log
 import com.example.firestoreshopping.domain.model.Category
+import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.Products
 import com.example.firestoreshopping.domain.repo.FirestoreRepo
 import com.example.firestoreshopping.util.Resource
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,20 +16,20 @@ import java.util.Locale
 import javax.inject.Inject
 
 class FirestoreRepoImpl @Inject constructor(
-    private val firestore:FirebaseFirestore
+    private val firestore:FirebaseFirestore,
+    private val auth:FirebaseAuth
 ):FirestoreRepo {
 
-    override suspend fun getCategory(): Flow<Resource<List<Category>>> = flow{
+    override suspend fun getCategory(): Flow<Resource<List<Category>>> = flow {
         try {
-           val result=firestore.collection("Category").get().await()
-            val category=result.documents.map {
+            val result = firestore.collection("Category").get().await()
+            val category = result.documents.map {
                 it.toObject(Category::class.java)!!.copy(categoryId = it.id)
             }
             emit(Resource.Success(category))
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             emit(Resource.Error("Error"))
-            Log.e("error","erroro:${e.localizedMessage}")
+            Log.e("error", "erroro:${e.localizedMessage}")
         }
     }
 
@@ -47,7 +49,10 @@ class FirestoreRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun productSearch(search: String,categoryId: String): Flow<Resource<List<Products>>> = flow {
+    override suspend fun productSearch(
+        search: String,
+        categoryId: String
+    ): Flow<Resource<List<Products>>> = flow {
         try {
             emit(Resource.Loading())
             val productDocRef = firestore.collection("Category").document(categoryId)
@@ -64,5 +69,19 @@ class FirestoreRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun addProductToFavori(products: Favori): Resource<Favori> {
+        return try {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                firestore.collection("Users").document(userId)
+                    .collection("Favori").add(products.toMap()).await()
+                Resource.Success(products)
+            } else {
+                Resource.Error("User ID is null")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Error: ${e.message}")
+        }
+    }
 
 }

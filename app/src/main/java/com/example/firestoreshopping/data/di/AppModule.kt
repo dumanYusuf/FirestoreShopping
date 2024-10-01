@@ -34,8 +34,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesFirestoreRepo(firestore:FirebaseFirestore):FirestoreRepo{
-        return FirestoreRepoImpl(firestore)
+    fun providesFirestoreRepo(firestore:FirebaseFirestore,auth: FirebaseAuth):FirestoreRepo{
+        return FirestoreRepoImpl(firestore,auth)
     }
 
 
