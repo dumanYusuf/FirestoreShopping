@@ -91,9 +91,13 @@ fun PageController() {
             composable(Screan.HomePage.route) {
                 HomePage(navController = controller)
             }
-            composable(Screan.FavoriPage.route) {
-                FavoriPage()
+            composable(Screan.FavoriPage.route){
+                FavoriPage (){
+                    controller.popBackStack()
+                    currentIndex.value=0
+                }
             }
+
             composable(Screan.BasketPage.route) {
                 BasketPage()
             }

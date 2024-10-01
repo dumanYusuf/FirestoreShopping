@@ -84,4 +84,21 @@ class FirestoreRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun getProductToFavori(): Flow<Resource<List<Favori>>> = flow{
+        try {
+            val userId=auth.currentUser?.uid
+            if (userId!=null){
+                val favoriDocRef=firestore.collection("Users").document(userId)
+                    .collection("Favori").get().await()
+                val favoriList=favoriDocRef.documents.mapNotNull {
+                    it.toObject(Favori::class.java)
+                }
+                emit(Resource.Success(favoriList))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("Error"))
+        }
+    }
+
 }

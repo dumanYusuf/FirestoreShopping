@@ -127,7 +127,7 @@ fun ProductPage(
 fun ProductCard(products: Products, navController: NavController,viewModel: ProductsViewModel,isFavorited:Boolean) {
 
     val context = LocalContext.current
-    var isFavorited by remember { mutableStateOf(false) } // Başlangıç durumu false
+    var isFavorited by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier

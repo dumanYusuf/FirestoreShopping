@@ -6,7 +6,7 @@ data class Favori(
     val productName: String = "",
     val productPrice: Int = 0,
     val productImage: String = "",
-    val isFavorited:Boolean,
+    val isFavorited:Boolean=false,
 ) {
     fun toMap(): Map<String, Any> {
         return mapOf(

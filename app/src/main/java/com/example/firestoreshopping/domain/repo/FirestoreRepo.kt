@@ -15,5 +15,6 @@ interface FirestoreRepo {
     suspend fun getProducts(categoryId:String):Flow<Resource<List<Products>>>
     suspend fun productSearch(search:String,categoryId:String):Flow<Resource<List<Products>>>
     suspend fun addProductToFavori(products: Favori):Resource<Favori>
+    suspend fun getProductToFavori():Flow<Resource<List<Favori>>>
 
 }
