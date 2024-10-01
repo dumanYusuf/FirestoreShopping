@@ -2,6 +2,7 @@ package com.example.firestoreshopping.presentation.home_page_view.view
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,15 +28,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.example.firestoreshopping.R
+import com.example.firestoreshopping.Screan
 import com.example.firestoreshopping.presentation.home_page_view.HomePageViewModel
+import com.google.gson.Gson
+import java.net.URLEncoder
 
 
 @Composable
 fun HomePage(
-    viewModel: HomePageViewModel = hiltViewModel()
+    viewModel: HomePageViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val context = LocalContext.current
     val stateHome = viewModel.state.collectAsState()
@@ -66,37 +73,53 @@ fun HomePage(
             )
         }
 
-        LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
-            items(stateHome.value.categoryList) { category ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .height(230.dp),
-                    shape = androidx.compose.material3.MaterialTheme.shapes.medium,
+        if (stateHome.value.isLoading) {
+            CircularProgressIndicator(
+                color = Color.Red,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+            )
+        }
+        else{
+            LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
+                items(stateHome.value.categoryList) { category ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                            .height(230.dp)
+                            .clickable {
+                                val movieObject = Gson().toJson(category)
+                                val encodedMovieObject = URLEncoder.encode(movieObject, "UTF-8")
+                                navController.navigate(Screan.ProductPage.route+"/$encodedMovieObject")
+                            },
+                        shape = androidx.compose.material3.MaterialTheme.shapes.medium,
 
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            modifier = Modifier
-                                .height(150.dp)
-                                .fillMaxWidth(),
-                            contentScale = ContentScale.Crop,
-                            painter = rememberAsyncImagePainter(
-                                model = category.categoryImage, imageLoader = ImageLoader(context)
-                            ),
-                            contentDescription = ""
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
-                            modifier = Modifier.padding(8.dp),
-                            text = category.categoryName
-                        )
+                        ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Image(
+                                modifier = Modifier
+                                    .height(150.dp)
+                                    .fillMaxWidth(),
+                                contentScale = ContentScale.Crop,
+                                painter = rememberAsyncImagePainter(
+                                    model = category.categoryImage, imageLoader = ImageLoader(context)
+                                ),
+                                contentDescription = ""
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(8.dp),
+                                text = category.categoryName
+                            )
+                        }
                     }
                 }
             }
         }
+
     }
 }

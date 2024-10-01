@@ -10,13 +10,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
+import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.presentation.basket_page_view.view.BasketPage
 import com.example.firestoreshopping.presentation.favori_page_view.view.FavoriPage
 import com.example.firestoreshopping.presentation.home_page_view.view.HomePage
 import com.example.firestoreshopping.presentation.login_view.view.LoginPage
 import com.example.firestoreshopping.presentation.login_view.view.RegisterPage
 import com.example.firestoreshopping.presentation.person_page_view.view.PersonPage
+import com.example.firestoreshopping.presentation.product_page_view.view.ProductPage
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import java.net.URLDecoder
 
 @Composable
@@ -84,7 +87,7 @@ fun PageController() {
                 currentIndex.value=0
             }
             composable(Screan.HomePage.route) {
-                HomePage()
+                HomePage(navController = controller)
             }
             composable(Screan.FavoriPage.route) {
                 FavoriPage()
@@ -94,6 +97,16 @@ fun PageController() {
             }
             composable(Screan.PersonPage.route) {
                 PersonPage()
+            }
+            composable(Screan.ProductPage.route+"/{categoryId}",
+                arguments = listOf(
+                    navArgument("categoryId"){type= NavType.StringType}
+                )
+            ){
+                val jsonCategory = it.arguments?.getString("categoryId")
+                val decodedJsonCategory = URLDecoder.decode(jsonCategory, "UTF-8")
+                val category = Gson().fromJson(decodedJsonCategory, Category::class.java)
+                ProductPage(categoryId = category)
             }
         }
     }

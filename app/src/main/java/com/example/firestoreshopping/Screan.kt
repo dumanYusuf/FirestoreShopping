@@ -9,6 +9,8 @@ sealed class Screan (val route:String){
     object FavoriPage:Screan("favori")
     object BasketPage:Screan("basket")
     object PersonPage:Screan("person")
+    object ProductPage:Screan("product")
+
 
 
 }
