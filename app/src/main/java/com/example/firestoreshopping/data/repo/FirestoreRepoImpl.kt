@@ -160,4 +160,21 @@ class FirestoreRepoImpl @Inject constructor(
         }
 
     }
+
+    override suspend fun deleteBasketProduct(id: Basket): Resource<Basket> {
+        return try {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                firestore.collection("Users").document(userId)
+                    .collection("Basket").document(id.basketId).delete().await()
+                Resource.Success(id)
+            }
+
+            else {
+                Resource.Error("User Not Found")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Error: ${e.message}")
+        }
+    }
 }

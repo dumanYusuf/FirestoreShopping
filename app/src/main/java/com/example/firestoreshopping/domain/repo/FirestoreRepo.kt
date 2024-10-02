@@ -20,6 +20,6 @@ interface FirestoreRepo {
     suspend fun deleteProducts(id:Favori):Resource<Favori>
     suspend fun addProductToBasket(product:Basket):Resource<Basket>
     suspend fun getProductToBasket():Flow<Resource<List<Basket>>>
-
+    suspend fun deleteBasketProduct(id: Basket):Resource<Basket>
 
 }

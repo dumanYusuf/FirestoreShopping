@@ -92,18 +92,26 @@ fun PageController() {
                 HomePage(navController = controller)
             }
             composable(Screan.FavoriPage.route){
-                FavoriPage (){
-                    controller.popBackStack()
-                    currentIndex.value=0
-                }
+               FavoriPage(
+                   onBackPressed = {
+                       controller.popBackStack()
+                       currentIndex.value=0
+                   },
+                   navController = controller,
+                   currentIndex =currentIndex )
             }
 
             composable(Screan.BasketPage.route) {
-                BasketPage(){
-                    controller.popBackStack()
-                    currentIndex.value=0
-                }
+                BasketPage(
+                    onBackPressed = {
+                        controller.popBackStack()
+                        currentIndex.value = 0
+                    },
+                    navController = controller,
+                    currentIndex = currentIndex
+                )
             }
+
             composable(Screan.PersonPage.route) {
                 PersonPage()
             }

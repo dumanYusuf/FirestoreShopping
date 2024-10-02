@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.use_case.add_basket_firestore_use_case.AddBasketFirestoreUseCase
+import com.example.firestoreshopping.domain.use_case.delete_basket_use_case.DeleteBasketUseCase
 import com.example.firestoreshopping.domain.use_case.get_basktet_use_case.GetBasketUseCase
 import com.example.firestoreshopping.util.Resource
 import dagger.hilt.android.HiltAndroidApp
@@ -17,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BasketViewModel @Inject constructor(
-    private val getBasketUseCase: GetBasketUseCase
+    private val getBasketUseCase: GetBasketUseCase,
+    private val deleteBasketUseCase: DeleteBasketUseCase
 ):ViewModel() {
 
 
@@ -47,5 +50,11 @@ class BasketViewModel @Inject constructor(
        }
     }
 
+    fun deleteBasket(id:Basket){
+        viewModelScope.launch {
+            deleteBasketUseCase.deleteBasket(id)
+            Log.e("delete basket","success delete basket")
+        }
+    }
 
 }

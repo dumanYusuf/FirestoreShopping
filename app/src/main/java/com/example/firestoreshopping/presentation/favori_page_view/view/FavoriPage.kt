@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +19,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +47,8 @@ import com.example.firestoreshopping.presentation.favori_page_view.FavoriViewMod
 fun FavoriPage(
     viewModel: FavoriViewModel= hiltViewModel(),
     onBackPressed: () -> Unit,
+    navController: NavController,
+    currentIndex:MutableState<Int>
 ) {
 
     val state=viewModel.state.collectAsState()
@@ -78,6 +83,31 @@ fun FavoriPage(
             )
         }
         else{
+            if (state.value.favoriList.isEmpty()) {
+                Column (modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally){
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .padding(top = 50.dp),
+                        contentScale = ContentScale.Crop,
+                        painter = painterResource(id = R.drawable.emptykalp), contentDescription = "")
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Text(
+                        fontSize = 24.sp,
+                        text = "Henüz Favorilerinizde Ürün Yok")
+                    TextButton(
+                        onClick = {
+                            navController.navigate(Screan.HomePage.route)
+                            currentIndex.value=0
+
+                        }) {
+                        Text(fontSize = 20.sp,
+                            text = "Alışverişe Devam Et")
+                    }
+                }
+            }
+
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(state.value.favoriList){favoriList->
                     Card(modifier = Modifier
