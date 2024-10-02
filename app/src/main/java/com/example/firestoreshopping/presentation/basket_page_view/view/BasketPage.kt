@@ -103,10 +103,10 @@ fun BasketPage(
                         text = "Henüz Sepetinizde  Ürün Yok")
                     TextButton(
                         onClick = {
-                        navController.navigate(Screan.HomePage.route)
+                            navController.navigate(Screan.HomePage.route)
                             currentIndex.value=0
 
-                    }) {
+                        }) {
                         Text(fontSize = 20.sp,
                             text = "Alışverişe Devam Et")
                     }
@@ -154,20 +154,23 @@ fun BasketPage(
                                                 },
                                             painter = painterResource(id = R.drawable.delete), contentDescription = "")
                                     }
-                                   Row(modifier = Modifier
-                                       .fillMaxWidth()
-                                       .padding(10.dp)) {
-                                       Text(
-                                           fontSize = 30.sp,
-                                           text = "-")
-                                       Text(
-                                           fontSize = 25.sp,
-                                           text = "1")
-                                       Text(
-                                           fontSize = 30.sp,
-                                           text = "+")
-                                       }
-                                   }
+                                    Row(modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(10.dp)) {
+                                        TextButton(onClick = { /*TODO*/ }) {
+                                            Text(
+                                                fontSize = 18.sp,
+                                                text = "Azalt")
+                                        }
+                                        Text(
+                                            fontSize = 25.sp,
+                                            text = "1")
+                                        TextButton(onClick = { /*TODO*/ }) {
+                                            Text(
+                                                fontSize = 18.sp,
+                                                text = "Artır")
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -176,3 +179,4 @@ fun BasketPage(
             }
         }
     }
+}

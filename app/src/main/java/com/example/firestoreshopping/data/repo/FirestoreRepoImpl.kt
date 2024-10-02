@@ -5,6 +5,7 @@ import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.Products
+import com.example.firestoreshopping.domain.model.Users
 import com.example.firestoreshopping.domain.repo.FirestoreRepo
 import com.example.firestoreshopping.util.Resource
 import com.google.firebase.auth.FirebaseAuth
@@ -177,4 +178,25 @@ class FirestoreRepoImpl @Inject constructor(
             Resource.Error("Error: ${e.message}")
         }
     }
+
+    override suspend fun getUser(): Flow<Resource<List<Users>>> = flow {
+        try {
+            val currentUser = auth.currentUser?.uid
+            if (currentUser != null) {
+                val userDocRef = firestore.collection("Users").document(currentUser).get().await()
+                val user = userDocRef.toObject(Users::class.java)
+                if (user != null) {
+                    emit(Resource.Success(listOf(user)))
+                } else {
+                    emit(Resource.Error("User not found"))
+                }
+            } else {
+                emit(Resource.Error("Current user is null"))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error("Error: ${e.localizedMessage}"))
+        }
+    }
+
+
 }

@@ -113,7 +113,10 @@ fun PageController() {
             }
 
             composable(Screan.PersonPage.route) {
-                PersonPage()
+                PersonPage(){
+                    controller.popBackStack()
+                    currentIndex.value=0
+                }
             }
             composable(Screan.ProductPage.route+"/{categoryId}",
                 arguments = listOf(

@@ -4,6 +4,7 @@ import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.Products
+import com.example.firestoreshopping.domain.model.Users
 import com.example.firestoreshopping.util.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -21,5 +22,6 @@ interface FirestoreRepo {
     suspend fun addProductToBasket(product:Basket):Resource<Basket>
     suspend fun getProductToBasket():Flow<Resource<List<Basket>>>
     suspend fun deleteBasketProduct(id: Basket):Resource<Basket>
+    suspend fun getUser():Flow<Resource<List<Users>>>
 
 }

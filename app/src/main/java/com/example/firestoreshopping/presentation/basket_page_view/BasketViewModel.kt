@@ -30,24 +30,24 @@ class BasketViewModel @Inject constructor(
 
     fun loadBasket(){
         _state.value=BasketState(isLoading = true)
-       viewModelScope.launch {
-           getBasketUseCase.getBasket().collect{
-               when(it){
-                   is Resource.Success->{
-                       _state.value=BasketState(basketList = it.data?: emptyList())
-                       Log.e("basket success","basket success")
-                   }
-                   is Resource.Error->{
-                       _state.value=BasketState(isErorr ="Error")
-                       Log.e("basket error","basket error:${it.message}")
-                   }
-                   is Resource.Loading->{
-                       _state.value=BasketState(isLoading = true)
-                       Log.e("basket loading","basket loading")
-                   }
-               }
-           }
-       }
+        viewModelScope.launch {
+            getBasketUseCase.getBasket().collect{
+                when(it){
+                    is Resource.Success->{
+                        _state.value=BasketState(basketList = it.data?: emptyList())
+                        Log.e("basket success","basket success")
+                    }
+                    is Resource.Error->{
+                        _state.value=BasketState(isErorr ="Error")
+                        Log.e("basket error","basket error:${it.message}")
+                    }
+                    is Resource.Loading->{
+                        _state.value=BasketState(isLoading = true)
+                        Log.e("basket loading","basket loading")
+                    }
+                }
+            }
+        }
     }
 
     fun deleteBasket(id:Basket){
