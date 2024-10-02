@@ -140,4 +140,24 @@ class FirestoreRepoImpl @Inject constructor(
         }
 
     }
+
+    override suspend fun getProductToBasket(): Flow<Resource<List<Basket>>> = flow{
+
+        try {
+            val userId=auth.currentUser?.uid
+            if (userId!=null){
+               val result= firestore.collection("Users").document(userId)
+                    .collection("Basket").get().await()
+
+                val basketList=result.documents.mapNotNull {
+                    it.toObject(Basket::class.java)
+                }
+                emit(Resource.Success(basketList))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("Error message"))
+        }
+
+    }
 }

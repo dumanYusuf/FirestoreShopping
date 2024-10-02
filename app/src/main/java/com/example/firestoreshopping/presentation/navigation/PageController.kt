@@ -99,7 +99,10 @@ fun PageController() {
             }
 
             composable(Screan.BasketPage.route) {
-                BasketPage()
+                BasketPage(){
+                    controller.popBackStack()
+                    currentIndex.value=0
+                }
             }
             composable(Screan.PersonPage.route) {
                 PersonPage()
