@@ -1,5 +1,6 @@
 package com.example.firestoreshopping.domain.repo
 
+import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.Products
@@ -17,5 +18,6 @@ interface FirestoreRepo {
     suspend fun addProductToFavori(products: Favori):Resource<Favori>
     suspend fun getProductToFavori():Flow<Resource<List<Favori>>>
     suspend fun deleteProducts(id:Favori):Resource<Favori>
+    suspend fun addProductToBasket(product:Basket):Resource<Basket>
 
 }

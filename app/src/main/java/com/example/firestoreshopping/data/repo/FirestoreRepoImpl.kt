@@ -1,6 +1,7 @@
 package com.example.firestoreshopping.data.repo
 
 import android.util.Log
+import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.Products
@@ -120,5 +121,23 @@ class FirestoreRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun addProductToBasket(product: Basket): Resource<Basket> {
 
+      return  try {
+            val userId=auth.currentUser?.uid
+          if (userId!=null){
+              firestore.collection("Users").document(userId)
+                  .collection("Basket").document(product.basketId)
+                  .set(product.toMap()).await()
+              Resource.Success(product)
+          }
+          else{
+              Resource.Error("USER NOT FOUND")
+          }
+        }
+        catch (e:Exception){
+            Resource.Error("Erorr")
+        }
+
+    }
 }

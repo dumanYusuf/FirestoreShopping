@@ -25,6 +25,7 @@ import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
+import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.Products
@@ -42,6 +43,8 @@ fun ProductPage(
 ) {
     var searching = remember { mutableStateOf("") }
     var isFavorited by remember { mutableStateOf(false) }
+    var isBasketed by remember { mutableStateOf(false) }
+
 
 
 
@@ -49,7 +52,6 @@ fun ProductPage(
         viewModel.loadCategoryFilterProduct(categoryId.categoryId)
     }
 
-    val context = LocalContext.current
     val stateProduct = viewModel.state.collectAsState()
     val stateSearch = viewModel.stateSearch.collectAsState()
 
@@ -99,7 +101,7 @@ fun ProductPage(
                 } else {
                     LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
                         items(stateSearch.value.productList) { products ->
-                            ProductCard(products, navController,viewModel,isFavorited)
+                            ProductCard(products, navController,viewModel,isFavorited,isBasketed)
                         }
                     }
                 }
@@ -114,7 +116,7 @@ fun ProductPage(
                 } else {
                     LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
                         items(stateProduct.value.productList) { products ->
-                            ProductCard(products, navController,viewModel,isFavorited=true)
+                            ProductCard(products, navController,viewModel,true,true)
                         }
                     }
                 }
@@ -124,10 +126,12 @@ fun ProductPage(
 }
 
 @Composable
-fun ProductCard(products: Products, navController: NavController,viewModel: ProductsViewModel,isFavorited:Boolean) {
+fun ProductCard(products: Products, navController: NavController,viewModel: ProductsViewModel,isFavorited:Boolean,isBasketed:Boolean) {
 
     val context = LocalContext.current
     var isFavorited by remember { mutableStateOf(false) }
+    var isBasketed by remember { mutableStateOf(false) }
+
 
     Card(
         modifier = Modifier
@@ -181,8 +185,12 @@ fun ProductCard(products: Products, navController: NavController,viewModel: Prod
                     contentDescription = ""
                 )
                 Icon(
-                    tint = Color.Blue,
-                    modifier = Modifier.size(35.dp),
+                    tint = if (isBasketed) Color.Red else Color.Blue,
+                    modifier = Modifier.size(35.dp).clickable {
+                        val basket= Basket(basketId = products.productId,productId =products.productId, productName = products.productName, productImage = products.productImage, productPrice = products.productPrice, isBasket = true)
+                        viewModel.addBasketFirestore(basket)
+                        isBasketed=true
+                    },
                     painter = painterResource(id = R.drawable.basket),
                     contentDescription = ""
                 )
