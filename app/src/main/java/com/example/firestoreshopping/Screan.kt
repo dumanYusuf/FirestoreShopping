@@ -11,6 +11,8 @@ sealed class Screan (val route:String){
     object PersonPage:Screan("person")
     object ProductPage:Screan("product")
     object DetailPage:Screan("detail")
+    object ProfilInformationPage:Screan("profil")
+
 
 
 

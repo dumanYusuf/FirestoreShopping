@@ -2,6 +2,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,6 +13,7 @@ import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Products
+import com.example.firestoreshopping.domain.model.Users
 import com.example.firestoreshopping.presentation.basket_page_view.view.BasketPage
 import com.example.firestoreshopping.presentation.detail_page_view.DetailPage
 import com.example.firestoreshopping.presentation.favori_page_view.view.FavoriPage
@@ -20,6 +22,7 @@ import com.example.firestoreshopping.presentation.login_view.view.LoginPage
 import com.example.firestoreshopping.presentation.login_view.view.RegisterPage
 import com.example.firestoreshopping.presentation.person_page_view.view.PersonPage
 import com.example.firestoreshopping.presentation.product_page_view.view.ProductPage
+import com.example.firestoreshopping.presentation.profil_information.ProfilInformationPage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import java.net.URLDecoder
@@ -91,6 +94,21 @@ fun PageController() {
             composable(Screan.HomePage.route) {
                 HomePage(navController = controller)
             }
+            composable(Screan.ProfilInformationPage.route+"/{user}",
+                arguments = listOf(
+                    navArgument("user"){type= NavType.StringType}
+                )
+            ) {
+                val jsonUser = it.arguments?.getString("user")
+                val decodedJsonUser = URLDecoder.decode(jsonUser, "UTF-8")
+                val user = Gson().fromJson(decodedJsonUser, Users::class.java)
+               ProfilInformationPage(
+                   users =user ,
+                   onBackPressed = {
+                       controller.popBackStack()
+                       currentIndex.value=3
+                   },)
+            }
             composable(Screan.FavoriPage.route){
                FavoriPage(
                    onBackPressed = {
@@ -113,10 +131,13 @@ fun PageController() {
             }
 
             composable(Screan.PersonPage.route) {
-                PersonPage(){
-                    controller.popBackStack()
-                    currentIndex.value=0
-                }
+               PersonPage(
+                   onBackPressed = {
+                       controller.popBackStack()
+                       currentIndex.value=0
+                   },
+                   currentIndex = currentIndex,
+                   navController = controller)
             }
             composable(Screan.ProductPage.route+"/{categoryId}",
                 arguments = listOf(
