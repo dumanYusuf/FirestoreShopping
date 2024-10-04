@@ -24,4 +24,6 @@ interface FirestoreRepo {
     suspend fun deleteBasketProduct(id: Basket):Resource<Basket>
     suspend fun getUser():Flow<Resource<List<Users>>>
 
-}
+
+
+    }

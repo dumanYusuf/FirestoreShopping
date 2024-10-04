@@ -15,8 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -143,7 +148,7 @@ fun BasketPage(
                                         text = basketList.productName, fontWeight = FontWeight.Bold)
                                     Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically){
                                         Text(
-                                            text = "${basketList.productPrice} TL", fontSize = 20.sp)
+                                            text = "${basketList.productPrice*basketList.quantity} TL", fontSize = 20.sp)
                                         Icon(
                                             tint = Color.Red,
                                             modifier = Modifier
@@ -157,15 +162,19 @@ fun BasketPage(
                                     Row(modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(10.dp)) {
-                                        TextButton(onClick = { /*TODO*/ }) {
+                                        TextButton(onClick = {
+                                            viewModel.decreaseQuantity(basketList)
+                                        }) {
                                             Text(
                                                 fontSize = 18.sp,
                                                 text = "Azalt")
                                         }
                                         Text(
                                             fontSize = 25.sp,
-                                            text = "1")
-                                        TextButton(onClick = { /*TODO*/ }) {
+                                            text = "${basketList.quantity}")
+                                        TextButton(onClick = {
+                                            viewModel.increaseQuantity(basketList)
+                                        }) {
                                             Text(
                                                 fontSize = 18.sp,
                                                 text = "Artır")
@@ -176,6 +185,40 @@ fun BasketPage(
                         }
                     }
                 }
+            }
+        }
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { /*TODO*/ },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF1976D2)
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            shape = RoundedCornerShape(16.dp),
+            elevation = ButtonDefaults.buttonElevation(8.dp)
+        ) {
+            Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
+                Text(
+                    text = "Ödemeyi Tamamla",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    text = "${viewModel.calculateTotalPrice()} TL",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
         }
     }

@@ -197,6 +197,4 @@ class FirestoreRepoImpl @Inject constructor(
             emit(Resource.Error("Error: ${e.localizedMessage}"))
         }
     }
-
-
 }
