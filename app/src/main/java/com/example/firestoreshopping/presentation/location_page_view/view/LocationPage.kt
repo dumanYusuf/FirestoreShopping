@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +40,7 @@ import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
 import com.example.firestoreshopping.domain.model.LocationUser
 import com.example.firestoreshopping.presentation.location_page_view.LocationViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +52,8 @@ fun LocationPage(
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
+
+
     val state=viewModel.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val openSheet = remember { mutableStateOf(false) }
@@ -58,6 +62,8 @@ fun LocationPage(
     var mahalle by remember { mutableStateOf("") }
     var sokakNo by remember { mutableStateOf("") }
     var katNo by remember { mutableStateOf("") }
+
+
 
     LaunchedEffect(key1 = true) {
         viewModel.loadLocation()
@@ -96,30 +102,57 @@ fun LocationPage(
             )
         }
 
-        LazyColumn (modifier = Modifier.fillMaxSize()){
-            items(state.value.locatinList){
-                Card(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .size(80.dp)) {
-                    Row (modifier = Modifier.fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.SpaceBetween){
-                        Icon(
-                            modifier = Modifier.size(35.dp),
-                            painter = painterResource(id = R.drawable.loca), contentDescription ="" )
-                        Column {
-                            Text(
-                                fontSize = 20.sp,
-                                text = it.country +" " +it.province)
-                            Text(
-                                fontSize = 20.sp,
-                                text = it.neighborhood +" " +"No:"+it.streetNo+"Kat:"+it.floorNo)
+
+        if (state.value.isLoading){
+            CircularProgressIndicator(
+                color = Color.Red,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+            )
+        }
+        else{
+            if (state.value.locatinList.isEmpty()){
+                Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        text = "Artı tuşuna basarak adres ekleyin")
+                }
+            }
+            LazyColumn (modifier = Modifier.fillMaxSize()){
+                items(state.value.locatinList){
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .size(80.dp)) {
+                        Row (modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp), horizontalArrangement = Arrangement.SpaceBetween){
+                            Icon(
+                                modifier = Modifier.size(35.dp),
+                                painter = painterResource(id = R.drawable.loca), contentDescription ="" )
+                            Column {
+                                Text(
+                                    fontSize = 20.sp,
+                                    text = it.country +"/" +it.province)
+                                Text(
+                                    fontSize = 20.sp,
+                                    text = it.neighborhood +" " +"No:"+it.streetNo+"Kat:"+it.floorNo)
+                            }
+                            Icon(
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .clickable {
+                                        viewModel.deleteLocation(it)
+                                        viewModel.loadLocation()
+                                    },
+                                painter = painterResource(id = R.drawable.delete), contentDescription ="" )
                         }
-                        Icon(
-                            modifier = Modifier.size(35.dp),
-                            painter = painterResource(id = R.drawable.delete), contentDescription ="" )
                     }
                 }
             }
+
         }
 
         if (openSheet.value) {
@@ -144,7 +177,9 @@ fun LocationPage(
 
                     OutlinedTextField(
                         value = il,
-                        onValueChange = {il=it},
+                        onValueChange = {
+                            il=it
+                                        },
                         placeholder = { Text(text = "Lütfen il giriniz")},
                         label = { Text("İl") },
                         modifier = Modifier.fillMaxWidth()
@@ -185,44 +220,59 @@ fun LocationPage(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            val locationUser=LocationUser(locationId = "", province = il, country = ilce, neighborhood = mahalle, streetNo = sokakNo, floorNo = katNo)
+                            val locationUser = LocationUser(
+                                locationId = "",
+                                province = il,
+                                country = ilce,
+                                neighborhood = mahalle,
+                                streetNo = sokakNo,
+                                floorNo = katNo
+                            )
                             viewModel.addLocation(locationUser)
-                            openSheet.value=false
+                            openSheet.value = false
                             viewModel.loadLocation()
-                        }) {
+                        }
+                    ) {
                         Text(text = "Adresi Ekle")
                     }
+
                 }
             }
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-               // navController.navigate(Screan.LocationPage.route)
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF1976D2)
-            ),
+
+    if (state.value.locatinList.isEmpty()){
+
+    }
+    else{
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp),
-            shape = RoundedCornerShape(16.dp),
-            elevation = ButtonDefaults.buttonElevation(8.dp)
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Bottom
         ) {
-            Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
-                Text(
-                    text = "Ödemeyi Tamamla",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    // navController.navigate(Screan.LocationPage.route)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF1976D2)
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                shape = RoundedCornerShape(16.dp),
+                elevation = ButtonDefaults.buttonElevation(8.dp)
+            ) {
+                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
+                    Text(
+                        text = "Ödemeye Geç",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
         }
     }

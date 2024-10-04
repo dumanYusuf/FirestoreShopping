@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firestoreshopping.domain.model.LocationUser
 import com.example.firestoreshopping.domain.use_case.add_location_use_case.AddLocationUseCase
+import com.example.firestoreshopping.domain.use_case.delete_location_use_case.DeleteLocationUseCase
 import com.example.firestoreshopping.domain.use_case.get_location_use_case.GetLocationUseCase
 import com.example.firestoreshopping.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LocationViewModel @Inject constructor(
     private val locationUseCase: AddLocationUseCase,
-    private val getLocationUseCase: GetLocationUseCase
+    private val getLocationUseCase: GetLocationUseCase,
+    private val deleteLocationUseCase: DeleteLocationUseCase
 ):ViewModel(){
 
 
@@ -51,8 +53,13 @@ class LocationViewModel @Inject constructor(
                }
             }
         }
+    }
 
-
+    fun deleteLocation(id:LocationUser){
+        viewModelScope.launch {
+            deleteLocationUseCase.deleteLocation(id)
+            Log.e("delete location","delete location")
+        }
     }
 
 }

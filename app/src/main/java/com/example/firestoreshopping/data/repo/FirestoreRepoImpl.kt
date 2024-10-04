@@ -199,20 +199,25 @@ class FirestoreRepoImpl @Inject constructor(
 
     override suspend fun addLocation(location: LocationUser): Resource<LocationUser> {
         return try {
-            val currentUser = auth.currentUser?.uid
-            if (currentUser != null) {
-                firestore.collection("Users").document(currentUser)
-                    .collection("Location").document()
-                    .set(location.toMap())
-                    .await()
-                Resource.Success(location)
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                // Yeni bir belge oluştur ve otomatik olarak documentId'yi al
+                val docRef = firestore.collection("Users").document(userId)
+                    .collection("Location").document() // Bu aşamada documentId otomatik olarak oluşturulur
+                val locationWithId = location.copy(locationId = docRef.id) // Oluşturulan documentId'yi locationId olarak ayarlıyoruz
+
+                // Belgeyi kaydet
+                docRef.set(locationWithId.toMap()).await()
+
+                Resource.Success(locationWithId)
             } else {
-                Resource.Error("User Not Found")
+                Resource.Error("User ID is null")
             }
         } catch (e: Exception) {
             Resource.Error("Error: ${e.message}")
         }
     }
+
 
     override suspend fun getLocation(): Flow<Resource<List<LocationUser>>> = flow {
         try {
@@ -229,6 +234,23 @@ class FirestoreRepoImpl @Inject constructor(
             }
         } catch (e: Exception) {
             emit(Resource.Error("Error: ${e.message}"))
+        }
+    }
+
+    override suspend fun deleteLocation(id: LocationUser): Resource<LocationUser> {
+        return try {
+            val userId=auth.currentUser?.uid
+            if (userId!=null){
+                firestore.collection("Users").document(userId)
+                    .collection("Location").document(id.locationId).delete().await()
+                Resource.Success(id)
+            }
+            else{
+                Resource.Error("User Not Found")
+            }
+        }
+        catch (e:Exception){
+            Resource.Error("Error")
         }
     }
 
