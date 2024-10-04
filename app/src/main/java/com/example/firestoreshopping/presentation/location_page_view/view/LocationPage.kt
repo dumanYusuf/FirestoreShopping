@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
 import com.example.firestoreshopping.domain.model.LocationUser
@@ -48,6 +49,7 @@ import kotlinx.coroutines.launch
 fun LocationPage(
     onBackPressed: () -> Unit,
     viewModel: LocationViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -254,7 +256,7 @@ fun LocationPage(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    // navController.navigate(Screan.LocationPage.route)
+                     navController.navigate(Screan.PaymentPage.route)
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF1976D2)

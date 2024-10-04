@@ -95,12 +95,18 @@ fun PageController() {
             composable(Screan.HomePage.route) {
                 HomePage(navController = controller)
             }
+            composable(Screan.PaymentPage.route) {
+                PaymentPage {
+                    controller.popBackStack()
+                    currentIndex.value=2
+                }
+            }
             composable(Screan.LocationPage.route) {
               LocationPage(
                   onBackPressed = {
                       controller.popBackStack()
                       currentIndex.value=2
-                  },)
+                  }, navController = controller)
             }
             composable(Screan.ProfilInformationPage.route+"/{user}",
                 arguments = listOf(
