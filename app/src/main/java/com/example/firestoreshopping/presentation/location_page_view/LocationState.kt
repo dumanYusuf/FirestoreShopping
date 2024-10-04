@@ -4,7 +4,7 @@ import com.example.firestoreshopping.domain.model.LocationUser
 
 data class LocationState(
 
-    val locatin:List<LocationUser> = emptyList(),
+    val locatinList:List<LocationUser> = emptyList(),
     val isError: String="",
     val isLoading:Boolean=false
 )

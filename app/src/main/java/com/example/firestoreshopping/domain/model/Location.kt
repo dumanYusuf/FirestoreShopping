@@ -5,8 +5,8 @@ data class LocationUser(
     val province: String = "",
     val country: String = "",
     val neighborhood: String = "",
-    val streetNo:String,
-    val floorNo:String
+    val streetNo:String="",
+    val floorNo:String=""
 ) {
     fun toMap(): Map<String, Any?> {
         return mapOf(

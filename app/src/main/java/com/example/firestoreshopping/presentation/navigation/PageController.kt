@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.firestoreshopping.R
 import com.example.firestoreshopping.Screan
+import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Products
 import com.example.firestoreshopping.domain.model.Users
@@ -95,12 +96,11 @@ fun PageController() {
                 HomePage(navController = controller)
             }
             composable(Screan.LocationPage.route) {
-               LocationPage(
-                   onBackPressed = {
-                       controller.popBackStack()
-                       currentIndex.value=0
-                   }
-               )
+              LocationPage(
+                  onBackPressed = {
+                      controller.popBackStack()
+                      currentIndex.value=2
+                  },)
             }
             composable(Screan.ProfilInformationPage.route+"/{user}",
                 arguments = listOf(

@@ -25,6 +25,7 @@ interface FirestoreRepo {
     suspend fun deleteBasketProduct(id: Basket):Resource<Basket>
     suspend fun getUser():Flow<Resource<List<Users>>>
     suspend fun addLocation(location: LocationUser):Resource<LocationUser>
+    suspend fun getLocation():Flow<Resource<List<LocationUser>>>
 
 
     }

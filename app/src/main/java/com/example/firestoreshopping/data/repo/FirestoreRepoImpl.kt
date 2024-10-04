@@ -201,7 +201,8 @@ class FirestoreRepoImpl @Inject constructor(
         return try {
             val currentUser = auth.currentUser?.uid
             if (currentUser != null) {
-                firestore.collection("Location").document()
+                firestore.collection("Users").document(currentUser)
+                    .collection("Location").document()
                     .set(location.toMap())
                     .await()
                 Resource.Success(location)
@@ -212,5 +213,24 @@ class FirestoreRepoImpl @Inject constructor(
             Resource.Error("Error: ${e.message}")
         }
     }
+
+    override suspend fun getLocation(): Flow<Resource<List<LocationUser>>> = flow {
+        try {
+            val currentUser = auth.currentUser?.uid
+            if (currentUser != null) {
+                val locationSnapshot = firestore.collection("Users")
+                    .document(currentUser).collection("Location").get().await()
+                val locations = locationSnapshot.documents.mapNotNull { document ->
+                    document.toObject(LocationUser::class.java)
+                }
+                emit(Resource.Success(locations))
+            } else {
+                emit(Resource.Error("User Not Found"))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error("Error: ${e.message}"))
+        }
+    }
+
 
 }
