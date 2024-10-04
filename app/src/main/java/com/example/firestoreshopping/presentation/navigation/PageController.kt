@@ -94,6 +94,14 @@ fun PageController() {
             composable(Screan.HomePage.route) {
                 HomePage(navController = controller)
             }
+            composable(Screan.LocationPage.route) {
+               LocationPage(
+                   onBackPressed = {
+                       controller.popBackStack()
+                       currentIndex.value=0
+                   }
+               )
+            }
             composable(Screan.ProfilInformationPage.route+"/{user}",
                 arguments = listOf(
                     navArgument("user"){type= NavType.StringType}

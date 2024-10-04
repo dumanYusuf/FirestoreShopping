@@ -196,7 +196,9 @@ fun BasketPage(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate(Screan.LocationPage.route)
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF1976D2)
             ),

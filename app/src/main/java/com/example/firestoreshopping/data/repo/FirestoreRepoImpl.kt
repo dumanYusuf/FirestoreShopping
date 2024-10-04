@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Favori
+import com.example.firestoreshopping.domain.model.LocationUser
 import com.example.firestoreshopping.domain.model.Products
 import com.example.firestoreshopping.domain.model.Users
 import com.example.firestoreshopping.domain.repo.FirestoreRepo
@@ -13,8 +14,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import okhttp3.internal.filterList
-import java.util.Locale
 import javax.inject.Inject
 
 class FirestoreRepoImpl @Inject constructor(
@@ -197,4 +196,21 @@ class FirestoreRepoImpl @Inject constructor(
             emit(Resource.Error("Error: ${e.localizedMessage}"))
         }
     }
+
+    override suspend fun addLocation(location: LocationUser): Resource<LocationUser> {
+        return try {
+            val currentUser = auth.currentUser?.uid
+            if (currentUser != null) {
+                firestore.collection("Location").document()
+                    .set(location.toMap())
+                    .await()
+                Resource.Success(location)
+            } else {
+                Resource.Error("User Not Found")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Error: ${e.message}")
+        }
+    }
+
 }
