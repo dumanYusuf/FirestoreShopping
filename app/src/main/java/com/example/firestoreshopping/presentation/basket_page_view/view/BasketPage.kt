@@ -67,7 +67,7 @@ fun BasketPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            //.background(Color.White)
     ) {
         Row(
             modifier = Modifier
