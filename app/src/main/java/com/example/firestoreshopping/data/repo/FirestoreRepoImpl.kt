@@ -2,6 +2,7 @@ package com.example.firestoreshopping.data.repo
 
 import android.util.Log
 import com.example.firestoreshopping.domain.model.Basket
+import com.example.firestoreshopping.domain.model.Card
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.LocationUser
@@ -201,12 +202,10 @@ class FirestoreRepoImpl @Inject constructor(
         return try {
             val userId = auth.currentUser?.uid
             if (userId != null) {
-                // Yeni bir belge oluştur ve otomatik olarak documentId'yi al
                 val docRef = firestore.collection("Users").document(userId)
-                    .collection("Location").document() // Bu aşamada documentId otomatik olarak oluşturulur
-                val locationWithId = location.copy(locationId = docRef.id) // Oluşturulan documentId'yi locationId olarak ayarlıyoruz
+                    .collection("Location").document()
+                val locationWithId = location.copy(locationId = docRef.id)
 
-                // Belgeyi kaydet
                 docRef.set(locationWithId.toMap()).await()
 
                 Resource.Success(locationWithId)
@@ -254,5 +253,22 @@ class FirestoreRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun addCard(card: Card): Resource<Card> {
+        return try {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                val docRef = firestore.collection("Users").document(userId)
+                    .collection("Card").document()
+                val locationWithId = card.copy(cardId = docRef.id)
 
+                docRef.set(locationWithId.toMap()).await()
+
+                Resource.Success(locationWithId)
+            } else {
+                Resource.Error("User ID is null")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Error: ${e.message}")
+        }
+    }
 }

@@ -25,11 +25,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.firestoreshopping.R
+import com.example.firestoreshopping.domain.model.Card
+import com.example.firestoreshopping.presentation.payment_page_view.PaymentViewModel
 
 @Composable
 fun PaymentPage(
     onBackPressed: () -> Unit,
+    viewModel: PaymentViewModel= hiltViewModel()
 ) {
     var cardNumber by remember { mutableStateOf("") }
     var cardYearsMonth by remember { mutableStateOf("") }
@@ -40,7 +44,9 @@ fun PaymentPage(
     val scrollState = rememberScrollState()
 
 
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(scrollState)
         ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             IconButton(
@@ -120,14 +126,20 @@ fun PaymentPage(
             label = { Text("Kart sahibinin adını giriniz") },
         )
 
-        Row (modifier = Modifier.fillMaxWidth().padding(10.dp)
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
             , horizontalArrangement = Arrangement.SpaceBetween){
             Text(
                 fontSize = 20.sp,
                 text = "Kartı Kaydet")
             Switch(
                 checked =switchState ,
-                onCheckedChange = {switchState=it})
+                onCheckedChange = {
+                    switchState=it
+                    val newCard=Card(cardId = "", cardCv = cardCvv, cardHolder = cardHolder, cardNumber = cardNumber, cardYearsMonth = cardYearsMonth)
+                    viewModel.addCard(newCard)
+                })
         }
 
         Button(

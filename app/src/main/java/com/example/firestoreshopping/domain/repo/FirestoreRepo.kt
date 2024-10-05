@@ -1,6 +1,7 @@
 package com.example.firestoreshopping.domain.repo
 
 import com.example.firestoreshopping.domain.model.Basket
+import com.example.firestoreshopping.domain.model.Card
 import com.example.firestoreshopping.domain.model.Category
 import com.example.firestoreshopping.domain.model.Favori
 import com.example.firestoreshopping.domain.model.LocationUser
@@ -27,6 +28,7 @@ interface FirestoreRepo {
     suspend fun addLocation(location: LocationUser):Resource<LocationUser>
     suspend fun getLocation():Flow<Resource<List<LocationUser>>>
     suspend fun deleteLocation(id:LocationUser):Resource<LocationUser>
+    suspend fun addCard(card:Card):Resource<Card>
 
 
     }
