@@ -235,6 +235,7 @@ fun PersonPage(
                         .padding(8.dp)
                         .clickable {
                             navController.navigate(Screan.SavedCardPage.route)
+                            currentIndex.value=3
                         }
                 ) {
                     Row ( modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){

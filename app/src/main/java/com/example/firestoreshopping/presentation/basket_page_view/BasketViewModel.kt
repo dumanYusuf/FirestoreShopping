@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firestoreshopping.domain.model.Basket
+import com.example.firestoreshopping.domain.model.Products
 import com.example.firestoreshopping.domain.use_case.delete_basket_use_case.DeleteBasketUseCase
 import com.example.firestoreshopping.domain.use_case.get_basktet_use_case.GetBasketUseCase
 import com.example.firestoreshopping.util.Resource
@@ -87,6 +88,8 @@ class BasketViewModel @Inject constructor(
     fun calculateTotalPrice(): Int {
         return state.value.basketList.sumOf { it.productPrice * it.quantity }
     }
+
+
 
 
 }

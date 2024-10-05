@@ -38,6 +38,8 @@ fun PageController() {
 
     var isUserLoggedIn by remember { mutableStateOf(auth.currentUser != null) }
 
+
+
     LaunchedEffect(true) {
         auth.addAuthStateListener { firebaseAuth ->
             isUserLoggedIn = firebaseAuth.currentUser != null
@@ -72,8 +74,8 @@ fun PageController() {
                                 when (item) {
                                     "Home" -> Icon(painter = painterResource(id = R.drawable.home), contentDescription = null)
                                     "Favori" -> Icon(painter = painterResource(id = R.drawable.favori), contentDescription = null)
-                                    "Basket" -> Icon(painter = painterResource(id = R.drawable.basket), contentDescription = null)
-                                    "Person" -> Icon(painter = painterResource(id = R.drawable.person), contentDescription = null)
+                                    "Basket" ->  Icon(painter = painterResource(id = R.drawable.basket), contentDescription = null)
+                                     "Person" -> Icon(painter = painterResource(id = R.drawable.person), contentDescription = null)
                                 }
                             },
                             label = { Text(text = item) }
@@ -148,7 +150,7 @@ fun PageController() {
                         currentIndex.value = 0
                     },
                     navController = controller,
-                    currentIndex = currentIndex
+                    currentIndex = currentIndex,
                 )
             }
 
@@ -169,9 +171,13 @@ fun PageController() {
                 val jsonCategory = it.arguments?.getString("categoryId")
                 val decodedJsonCategory = URLDecoder.decode(jsonCategory, "UTF-8")
                 val category = Gson().fromJson(decodedJsonCategory, Category::class.java)
-                ProductPage(categoryId = category, navController = controller){
-                    controller.popBackStack()
-                }
+               ProductPage(
+                   categoryId = category,
+                   navController = controller,
+                   onBackPressed = {
+                       controller.popBackStack()
+                   },
+               )
             }
             composable(Screan.DetailPage.route+"/{product}",
                 arguments = listOf(
@@ -181,9 +187,12 @@ fun PageController() {
                 val jsonProduct = it.arguments?.getString("product")
                 val decodedJsonProduct = URLDecoder.decode(jsonProduct, "UTF-8")
                 val product = Gson().fromJson(decodedJsonProduct, Products::class.java)
-               DetailPage(product = product){
-                   controller.popBackStack()
-               }
+               DetailPage(
+                   product = product,
+                   onBackPressed = {
+                       controller.popBackStack()
+                       //currentIndex.value
+                   })
             }
         }
     }

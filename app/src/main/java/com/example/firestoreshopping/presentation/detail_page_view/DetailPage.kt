@@ -25,16 +25,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.example.firestoreshopping.R
+import com.example.firestoreshopping.domain.model.Basket
 import com.example.firestoreshopping.domain.model.Products
 
 
 @Composable
 fun DetailPage(
     product: Products,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    detailViewModel: DetailViewModel= hiltViewModel()
 ) {
     val context = LocalContext.current
     Column {
@@ -87,7 +90,10 @@ fun DetailPage(
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = Color.Blue,
                     ),
-                    onClick = { /*TODO*/ }) {
+                    onClick = {
+                        val newBasket=Basket(basketId = product.productId, productId = product.productId, productName = product.productName, productPrice = product.productPrice, productImage = product.productImage)
+                        detailViewModel.addBasketFirestore(newBasket)
+                    }) {
                     Text(
                         color = Color.White,
                         fontSize = 20.sp,

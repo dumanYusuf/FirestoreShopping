@@ -39,7 +39,8 @@ fun ProductPage(
     viewModel: ProductsViewModel = hiltViewModel(),
     categoryId: Category,
     navController: NavController,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+
 ) {
     var searching = remember { mutableStateOf("") }
     var isFavorited by remember { mutableStateOf(false) }
@@ -101,7 +102,7 @@ fun ProductPage(
                 } else {
                     LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(10.dp)) {
                         items(stateSearch.value.productList) { products ->
-                            ProductCard(products, navController,viewModel,isFavorited,isBasketed)
+                            ProductCard(products, navController,viewModel,isFavorited,isBasketed,)
                         }
                     }
                 }

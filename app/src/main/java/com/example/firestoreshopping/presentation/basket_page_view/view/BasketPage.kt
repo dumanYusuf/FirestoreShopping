@@ -53,7 +53,7 @@ fun BasketPage(
     viewModel: BasketViewModel = hiltViewModel(),
     onBackPressed: () -> Unit,
     navController: NavController,
-    currentIndex: MutableState<Int>
+    currentIndex: MutableState<Int>,
 
 ) {
 

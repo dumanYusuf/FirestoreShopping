@@ -8,7 +8,8 @@ data class Basket(
     val productImage: String = "",
     val isBasket:Boolean=false,
     var quantity: Int = 1,
-    var totalPrice: Int = productPrice
+    var totalPrice: Int = productPrice,
+
 ) {
 
     fun toMap(): Map<String, Any> {
@@ -20,7 +21,7 @@ data class Basket(
             "productImage" to productImage,
             "isBasket" to isBasket,
             "quantity" to quantity,
-            "totalPrice" to totalPrice
+            "totalPrice" to totalPrice,
         )
     }
 }
