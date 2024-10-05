@@ -34,5 +34,6 @@ Bu yapı, kodun okunabilirliğini, bakımını ve test edilebilirliğini artır�
 ![image alt](https://github.com/dumanYusuf/FirestoreShopping/blob/master/shop9.png?raw=true)
 ![image alt](https://github.com/dumanYusuf/FirestoreShopping/blob/master/shop10.png?raw=true)
 ![image alt](https://github.com/dumanYusuf/FirestoreShopping/blob/master/shop11.png?raw=true)
+![image alt](https://github.com/dumanYusuf/FirestoreShopping/blob/master/shop12.png?raw=true)
 
 
