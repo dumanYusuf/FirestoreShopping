@@ -29,6 +29,7 @@ interface FirestoreRepo {
     suspend fun getLocation():Flow<Resource<List<LocationUser>>>
     suspend fun deleteLocation(id:LocationUser):Resource<LocationUser>
     suspend fun addCard(card:Card):Resource<Card>
+    suspend fun getSavedCard():Flow<Resource<List<Card>>>
 
 
     }

@@ -14,6 +14,8 @@ sealed class Screan (val route:String){
     object ProfilInformationPage:Screan("profil")
     object LocationPage:Screan("location")
     object PaymentPage:Screan("payment")
+    object SavedCardPage:Screan("saved_card")
+
 
 
 

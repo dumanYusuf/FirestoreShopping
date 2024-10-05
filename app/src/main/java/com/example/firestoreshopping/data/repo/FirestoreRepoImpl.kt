@@ -271,4 +271,21 @@ class FirestoreRepoImpl @Inject constructor(
             Resource.Error("Error: ${e.message}")
         }
     }
+
+    override suspend fun getSavedCard(): Flow<Resource<List<Card>>> = flow {
+        try {
+            val userId=auth.currentUser?.uid
+            if (userId!=null){
+                val cardDocRef=firestore.collection("Users").document(userId)
+                    .collection("Card").get().await()
+                val cardList=cardDocRef.documents.mapNotNull {
+                    it.toObject(Card::class.java)
+                }
+                emit(Resource.Success(cardList))
+            }
+        }
+        catch (e:Exception){
+            emit(Resource.Error("eError"))
+        }
+    }
 }
