@@ -22,3 +22,6 @@ view:sadece UI kodları bulunmata ve viewModele erişip UI güncelleme işlem ya
 Repository: Veritabanı veya uzak veri kaynakları ile etkileşimde bulunur. Firebase Authentication işlemlerini yönetir ve Use Case katmanına veri sağlar. Bağımsız olarak test edilebilir ve iş mantığından ayrıdır.
 
 Bu yapı, kodun okunabilirliğini, bakımını ve test edilebilirliğini artırır. Her bir fonksiyon ve sınıf, belirli bir işlevi yerine getirecek şekilde tasarlanmıştır, bu da uygulamanın daha düzenli ve yönetilebilir olmasını sağlar.
+
+
+https://github.com/dumanYusuf/FirestoreShopping/issues/1#issue-2567833328
