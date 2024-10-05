@@ -24,4 +24,3 @@ Repository: Veritabanı veya uzak veri kaynakları ile etkileşimde bulunur. Fir
 Bu yapı, kodun okunabilirliğini, bakımını ve test edilebilirliğini artırır. Her bir fonksiyon ve sınıf, belirli bir işlevi yerine getirecek şekilde tasarlanmıştır, bu da uygulamanın daha düzenli ve yönetilebilir olmasını sağlar.
 
 
-https://github.com/dumanYusuf/FirestoreShopping/issues/1#issue-2567833328
