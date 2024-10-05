@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -100,21 +102,36 @@ fun PaymentPage(
                 .fillMaxWidth()
                 .padding(10.dp),
             value = cardYearsMonth,
-            onValueChange = {
-                cardYearsMonth=it
+            onValueChange = { input ->
+                var formattedInput = input.filter { it.isDigit() }
+
+                if (formattedInput.length > 2) {
+                    formattedInput = formattedInput.substring(0, 2) + "/" + formattedInput.substring(2)
+                }
+
+                if (formattedInput.length <= 5) {
+                    cardYearsMonth = formattedInput
+                }
             },
-            label = { Text("Kard Ay/Yıl giriniz") },
+            label = { Text("Kart Ay/Yıl giriniz") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
+
+
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
             value = cardCvv,
-            onValueChange = {
-                cardCvv=it
+            onValueChange = { input ->
+                if (input.length <= 3) {
+                    cardCvv = input
+                }
             },
             label = { Text("CVV giriniz") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
+
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()

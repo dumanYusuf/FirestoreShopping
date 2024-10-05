@@ -288,4 +288,19 @@ class FirestoreRepoImpl @Inject constructor(
             emit(Resource.Error("eError"))
         }
     }
+
+    override suspend fun deleteCard(card: Card): Resource<Card> {
+        return try {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                firestore.collection("Users").document(userId)
+                    .collection("Card").document(card.cardId).delete().await()
+                Resource.Success(card)
+            } else {
+                Resource.Error("User Not Found")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Error")
+        }
+    }
 }

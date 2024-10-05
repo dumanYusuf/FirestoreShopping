@@ -30,6 +30,6 @@ interface FirestoreRepo {
     suspend fun deleteLocation(id:LocationUser):Resource<LocationUser>
     suspend fun addCard(card:Card):Resource<Card>
     suspend fun getSavedCard():Flow<Resource<List<Card>>>
-
+    suspend fun deleteCard(card: Card):Resource<Card>
 
     }

@@ -108,7 +108,8 @@ fun SavedCardPage(
                                 modifier = Modifier
                                     .size(35.dp)
                                     .clickable {
-
+                                        viewModel.deleceCard(it)
+                                        viewModel.loadSavedCard()
                                     },
                                 painter = painterResource(id = R.drawable.delete), contentDescription ="" )
                         }
