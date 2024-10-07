@@ -204,7 +204,7 @@ fun PersonPage(
                         .height(70.dp)
                         .padding(8.dp)
                         .clickable {
-                            navController.navigate(Screan.LocationPage.route)
+                            navController.navigate(Screan.SavedAdressPage.route)
                         }
                 ) {
                     Row ( modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){

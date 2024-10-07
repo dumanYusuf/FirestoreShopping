@@ -24,6 +24,7 @@ import com.example.firestoreshopping.presentation.login_view.view.RegisterPage
 import com.example.firestoreshopping.presentation.person_page_view.view.PersonPage
 import com.example.firestoreshopping.presentation.product_page_view.view.ProductPage
 import com.example.firestoreshopping.presentation.profil_information.ProfilInformationPage
+import com.example.firestoreshopping.presentation.saved_adress.view.SavedAdresPage
 import com.example.firestoreshopping.presentation.saved_card_page_view.view.SavedCardPage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -97,6 +98,12 @@ fun PageController() {
             }
             composable(Screan.HomePage.route) {
                 HomePage(navController = controller)
+            }
+            composable(Screan.SavedAdressPage.route) {
+                SavedAdresPage {
+                    controller.popBackStack()
+                    currentIndex.value=4
+                }
             }
             composable(Screan.SavedCardPage.route) {
               SavedCardPage {
